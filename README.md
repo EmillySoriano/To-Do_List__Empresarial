@@ -1,3 +1,20 @@
+# 📚 TriadZEG - To-Do List Empresarial
+O TriadZEG é uma aplicação web voltada para a gestão de tarefas no ambiente empresarial, projetada para otimizar a organização e a colaboração entre equipes.
+
+## 🎯 Objetivo do Projeto
+O TriadZEG tem como objetivo facilitar o planejamento e a execução de tarefas em equipe, promovendo maior produtividade e organização no ambiente corporativo. Com uma interface intuitiva, a aplicação permite que equipes gerenciem projetos, acompanhem o progresso e colaborem de forma eficiente.
+
+## ⚙️ Funcionalidades
+* Gestão de Tarefas: Crie, edite e atribua tarefas com prazos, prioridades e responsáveis.
+* Colaboração em Equipe: Permita que múltiplos usuários acessem e atualizem listas de tarefas em tempo real.
+
+## 🔧 Tecnologias Utilizadas
+* Frontend: React.js, TypeScript, CSS
+* Backend: Node.js, Express
+* Banco de Dados: MySQL
+
+--
+
 # API To-Do List Empresarial
 
 API RESTful para gerenciamento de tarefas empresariais, desenvolvida com Node.js, Express e MySQL.
@@ -35,7 +52,7 @@ npm start
 
 Cria uma nova tarefa.
 
-- **Body**:
+* **Body**:
 
 ```json
 {
@@ -48,7 +65,7 @@ Cria uma nova tarefa.
 }
 ```
 
-- **Resposta**: `201 Created`
+* **Resposta**: `201 Created`
 
 ```json
 {
@@ -61,7 +78,7 @@ Cria uma nova tarefa.
 
 Lista todas as tarefas com informações relacionadas.
 
-- **Resposta**: `200 OK`
+* **Resposta**: `200 OK`
 
 ```json
 {
@@ -82,7 +99,7 @@ Lista todas as tarefas com informações relacionadas.
 
 Retorna os detalhes de uma tarefa específica.
 
-- **Resposta**: `200 OK`
+* **Resposta**: `200 OK`
 
 ```json
 {
@@ -106,7 +123,7 @@ Retorna os detalhes de uma tarefa específica.
 
 Cria um novo usuário.
 
-- **Body**:
+* **Body**:
 
 ```json
 {
@@ -132,7 +149,7 @@ Retorna os detalhes de um usuário específico, incluindo suas tarefas e acessos
 
 Cria um novo departamento.
 
-- **Body**:
+* **Body**:
 
 ```json
 {
@@ -151,7 +168,7 @@ Lista todos os departamentos.
 
 Cria uma nova equipe.
 
-- **Body**:
+* **Body**:
 
 ```json
 {
@@ -170,7 +187,7 @@ Lista todas as equipes.
 
 Cria uma nova categoria.
 
-- **Body**:
+* **Body**:
 
 ```json
 {
@@ -185,7 +202,7 @@ Cria uma nova categoria.
 
 Associa uma categoria a uma tarefa.
 
-- **Body**:
+* **Body**:
 
 ```json
 {
@@ -198,7 +215,7 @@ Associa uma categoria a uma tarefa.
 
 Atribui um tipo de acesso a um usuário.
 
-- **Body**:
+* **Body**:
 
 ```json
 {
@@ -209,15 +226,15 @@ Atribui um tipo de acesso a um usuário.
 
 ## Status HTTP
 
-- `200`: Sucesso
-- `201`: Criado
-- `400`: Erro de validação
-- `404`: Recurso não encontrado
-- `500`: Erro interno do servidor
+* `200`: Sucesso
+* `201`: Criado
+* `400`: Erro de validação
+* `404`: Recurso não encontrado
+* `500`: Erro interno do servidor
 
 ## Observações
 
-- Todas as requisições que modificam dados (POST, PUT, DELETE) requerem que o corpo da requisição seja em formato JSON.
-- As datas devem ser enviadas no formato "YYYY-MM-DD".
-- Os IDs são sempre números inteiros.
-- As respostas sempre incluem uma mensagem descritiva e, quando apropriado, os dados solicitados.
+* Todas as requisições que modificam dados (POST, PUT, DELETE) requerem que o corpo da requisição seja em formato JSON.
+* As datas devem ser enviadas no formato "YYYY-MM-DD".
+* Os IDs são sempre números inteiros.
+* As respostas sempre incluem uma mensagem descritiva e, quando apropriado, os dados solicitados.
