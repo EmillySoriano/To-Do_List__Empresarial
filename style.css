@@ -1,59 +1,128 @@
-
-.container {
-    max-width: 1000px;
-    margin: 40px auto;
-    background: #fff;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+body {
+    background: #f4f4f4;
 }
-h1 {
-    text-align: center;
-    color: #333;
+.fade {
+    opacity: 0;
+    transition: opacity 0.5s;
+    pointer-events: none;
 }
-.card-tarefa form {
-    display: block;
+.fade.show {
+    opacity: 1;
+    pointer-events: auto;
 }
-
-.card-tarefa form input,
-.card-tarefa form button {
-    display: block;
-    width: 100%;
-    margin-bottom: 10px;
-    box-sizing: border-box;
+#tela-inicial,
+#tela-todo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #f4f4f4;
+    z-index: 10;
+    overflow-y: auto;
+    padding-top: 100px;
 }
-
-input[type="text"] {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #191919;
-    border-radius: 4px;
+#tela-todo {
+    z-index: 20;
 }
-button {
-    padding: 10px 20px;
+#btn-voltar {
+    position: fixed;
+    top: 32px;
+    left: 32px;
+    z-index: 1050;
+    border-radius: 20px;
+    padding: 10px 28px;
+    font-size: 1.1rem;
+    background: #0084f7;
+    color: #fff;
     border: none;
-    background: #093d76;
-    color: #dd1111;
-    border-radius: 4px;
+    transition: background 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+#btn-voltar:hover {
+    background: #0056b3;
+}
+#btn-criar-tarefa, #btn-filtro-tarefa {
+    border-radius: 30px;
+    padding: 14px 24px 14px 18px;
+    font-size: 1.1em;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+#tarefas-lista {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 5px;
+}
+.card-tarefa {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    width: 250px;
+    min-width: 220px;
+    max-width: 100%;
+}
+.card-tarefa.done {
+    opacity: 0.6;
+    text-decoration: line-through;
+}
+.card-tarefa h3 {
+    margin: 0 0 8px 0;
+}
+.card-tarefa .actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+}
+.card-tarefa .actions button {
+    border-radius: 20px !important;
+    padding: 6px 18px;
+    font-size: 1rem;
+    border: none;
+    transition: background 0.2s;
+}
+
+
+.card-tarefa {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 28px 24px;          
+    margin-bottom: 16px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    width: 340px;                 
+    min-width: 300px;             
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+
+.card-tarefa .actions {
+    margin-top: auto;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    padding-top: 12px;
+}
+
+.card-tarefa .actions button {
+    border-radius: 20px !important;
+    padding: 6px 18px;
+    font-size: 1rem;
+    border: none;
+    transition: background 0.2s;
     cursor: pointer;
 }
-ul {
-    list-style: none;
-    padding: 0;
-}
-li {
-    background: #f9f9f9;
-    margin-bottom: 10px;
-    padding: 12px;
-    border-radius: 4px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.done {
-    text-decoration: line-through;
-    color: #888;
-}
+
 .btn-concluir {
     background: #28a745 !important; 
     color: #fff;
@@ -68,119 +137,44 @@ li {
 }
 .btn-salvar {
     background: #28a745 !important; 
-    color: #333;
+    color: #fff;
 }
 .btn-cancelar {
     background: #6c757d !important; 
     color: #fff;
 }
-.card-tarefa {
-    background: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    padding: 16px;
-    margin-bottom: 16px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-}
-.card-tarefa.done {
-    opacity: 0.6;
-    text-decoration: line-through;
-}
-.card-tarefa h3 {
-    margin: 0 0 8px 0;
-}
-.card-tarefa .actions {
-    margin-top: 10px;
-}
-.card-tarefa .actions button {
-    margin-right: 8px;
-}
-.card-tarefa form input[type="date"] {
-    width: 20%;
-    min-width: 140px;
-    display: block;
-    margin-bottom: 10px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
 
-.tarefas-horizontal {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-top: 20px;
-}
-
-.tarefas-horizontal .card-tarefa {
-    width: 250px;
-    min-width: 220px;
-    max-width: 100%;
-    margin-bottom: 0;
-}
-
-.card-tarefa .actions button,
-.btn-concluir,
-.btn-editar,
-.btn-excluir,
-.btn-salvar,
-.btn-cancelar {
-    border-radius: 20px !important;
-    padding: 6px 18px;
-    font-size: 1rem;
-    margin-right: 6px;
-    border: none;
-    transition: background 0.2s;
-}
-#tela-inicial,
-#tela-todo {
+.modal-tarefa-bg {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: #f4f4f4;
-    z-index: 10;
-    overflow-y: auto;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-#tela-todo {
-    z-index: 20;
+.modal-tarefa {
+    background: #fff;
+    padding: 32px 24px 24px 24px;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    min-width: 340px;
+    max-width: 95vw;
 }
-
-#btn-voltar {
-     border-radius: 20px;
-    padding: 10px 32px;
-    font-size: 1.1rem;
-    background: #0081f1;
-    color: #fff;
-    border: none;
-    transition: background 0.2s, box-shadow 0.2s;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-    margin: 0 auto;
-    display: block;
+@media (max-width: 600px) {
+    .modal-tarefa { min-width: 90vw; padding: 16px 6px; }
+}
+#todo-form input {
+    margin-bottom: 8px;
 }
 
-#btn-voltar {
-    border-radius: 20px;
-    padding: 10px 32px;
-    font-size: 1.1rem;
-    background: #0081f1;
-    color: #fff;
-    border: none;
-    transition: background 0.2s, box-shadow 0.2s;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-}
-.card-tarefa .actions .btn {
-    min-width: 0;
-    flex: 1 1 0;
-    margin-right: 0 !important;
-    margin-left: 0 !important;
-    border-radius: 20px !important;
-    padding: 8px 0;
-    font-size: 1rem;
-    text-align: center;
-}
-.card-tarefa .actions .btn:not(:last-child) {
-    margin-right: 8px !important;
+#btn-limpar-filtro {
+    border-radius: 30px;
+    padding: 14px 24px 14px 18px;
+    font-size: 1.1em;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
 }
