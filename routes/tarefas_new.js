@@ -18,6 +18,39 @@ router.post('/', async (req, res, next) => {
       throw new ValidationError('Data de prazo inválida');
     }
 
+    // Garantir que existe o departamento padrão
+    const [depts] = await db.query('SELECT COUNT(*) as count FROM departamento');
+    if (depts[0].count === 0) {
+      await db.query(`
+        INSERT INTO departamento (Nome_Departamento, Descricao) 
+        VALUES ('TI', 'Departamento de Tecnologia da Informação')
+      `);
+    }
+
+    // Garantir que existe pelo menos um usuário padrão
+    const [users] = await db.query('SELECT COUNT(*) as count FROM usuario');
+    if (users[0].count === 0) {
+      await db.query(`
+        INSERT INTO usuario (Nome_Primeiro, Nome_Sobrenome, Cargo, Data_Nascimento, Departamento_ID) 
+        VALUES ('Sistema', 'Padrão', 'Administrador', '1990-01-01', 1)
+      `);
+    }
+
+    // Adicionar colunas extras na tabela se não existirem
+    try {
+      await db.query(`
+        ALTER TABLE tarefa 
+        ADD COLUMN Criador VARCHAR(100),
+        ADD COLUMN Responsavel VARCHAR(100),
+        ADD COLUMN Prioridade ENUM('Baixa','Média','Alta') DEFAULT 'Média',
+        ADD COLUMN Status VARCHAR(50) DEFAULT 'Pendente',
+        ADD COLUMN Categoria VARCHAR(100)
+      `);
+    } catch (alterError) {
+      // Ignora erros se as colunas já existirem
+      console.log('Colunas já existem ou erro ao adicionar:', alterError.message);
+    }
+
     const [result] = await db.query(`
       INSERT INTO tarefa (Titulo, Descricao, Data_Criacao, Data_Prazo, ID_Usuario_Criador, Criador, Responsavel, Prioridade, Status, Categoria) 
       VALUES (?, ?, CURDATE(), ?, 1, ?, ?, ?, ?, ?)

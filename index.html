@@ -52,14 +52,19 @@
 
     <!-- Modal de Nova Tarefa -->
     <div id="modal-tarefa" class="modal-tarefa-bg" style="display:none;">
-      <div class="modal-tarefa">
-        <form id="todo-form" class="d-flex flex-column gap-3">
+      <div class="modal-tarefa">        <form id="todo-form" class="d-flex flex-column gap-3">
           <h4 class="mb-3">Nova Tarefa</h4>
           <input type="text" id="titulo" class="form-control" placeholder="Título" required>
-          <input type="text" id="descricao" class="form-control" placeholder="Descrição" required>
-          <input type="date" id="prazo" class="form-control" required>
+          <textarea id="descricao" class="form-control" placeholder="Descrição" rows="3"></textarea>
+          <input type="date" id="prazo" class="form-control">
           <input type="text" id="criador" class="form-control" placeholder="Criador" required>
           <input type="text" id="responsavel" class="form-control" placeholder="Responsável/Setor" required>
+          <select id="prioridade" class="form-control" required>
+            <option value="">Selecione a Prioridade</option>
+            <option value="Baixa">Baixa</option>
+            <option value="Média">Média</option>
+            <option value="Alta">Alta</option>
+          </select>
           <input type="text" id="categoria" class="form-control" placeholder="Categoria" required>
           <div class="d-flex gap-2 justify-content-end">
             <button type="button" id="btn-cancelar-form" class="btn btn-secondary">Voltar</button>
@@ -67,16 +72,19 @@
           </div>
         </form>
       </div>
-    </div>
-
-    <!-- Modal de Filtro -->
+    </div>    <!-- Modal de Filtro -->
 <div id="modal-filtro" class="modal-tarefa-bg" style="display:none;">
-  <div class="modal-tarefa">
-    <form id="filtro-form" class="d-flex flex-column gap-3">
+  <div class="modal-tarefa">    <form id="filtro-form" class="d-flex flex-column gap-3">
       <h4 class="mb-3">Filtrar Tarefas</h4>
       <input type="text" id="filtro-titulo" class="form-control" placeholder="Título">
       <input type="text" id="filtro-responsavel" class="form-control" placeholder="Responsável/Setor">
       <input type="text" id="filtro-categoria" class="form-control" placeholder="Categoria">
+      <select id="filtro-prioridade" class="form-control">
+        <option value="">Todas as Prioridades</option>
+        <option value="Baixa">Baixa</option>
+        <option value="Média">Média</option>
+        <option value="Alta">Alta</option>
+      </select>
       <div class="d-flex gap-2 justify-content-end">
         <button type="button" id="btn-cancelar-filtro" class="btn btn-secondary">Voltar</button>
         <button type="submit" class="btn btn-success">Aplicar</button>
