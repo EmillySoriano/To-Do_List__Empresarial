@@ -4,9 +4,11 @@
   "main": "index.js",  "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "setup-db": "node scripts/import-database.js",
-    "reset-db": "node scripts/reset-database.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "setup-db": "node scripts/setup-database.js",
+    "setup-simple": "node scripts/simple-setup.js",
+    "update-table": "node scripts/update-table.js",
+    "test": "node test-app.js",
+    "test-app": "node test-app.js"
   },
   "author": "",
   "license": "ISC",

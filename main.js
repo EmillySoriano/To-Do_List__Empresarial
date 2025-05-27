@@ -1,6 +1,7 @@
 const form = document.getElementById('todo-form');
 const tarefasLista = document.getElementById('tarefas-lista');
-const API_URL = 'http://localhost:3000';
+// URL dinâmica baseada na localização atual
+const API_URL = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;
 let tarefas = [];
 
 // Função para carregar tarefas do backend
@@ -21,21 +22,55 @@ async function carregarTarefas() {
 function renderTarefas(lista) {
     tarefasLista.innerHTML = '';
     
+    if (lista.length === 0) {
+        tarefasLista.innerHTML = '<p class="text-center">Nenhuma tarefa encontrada.</p>';
+        return;
+    }
+    
     lista.forEach((tarefa) => {
         const card = document.createElement('div');
-        card.className = 'card-tarefa';        card.innerHTML = `
-            <h3>${tarefa.Titulo}</h3>
-            <p>${tarefa.Descricao || 'Sem descrição'}</p>
-            <p><strong>Criada em:</strong> ${tarefa.Data_Criacao ? new Date(tarefa.Data_Criacao).toLocaleDateString() : 'N/A'}</p>
-            <p><strong>Prazo:</strong> ${tarefa.Data_Prazo ? new Date(tarefa.Data_Prazo).toLocaleDateString() : 'Não definido'}</p>
-            <p><strong>Criador:</strong> ${tarefa.Criador || 'N/A'}</p>
+        card.className = 'card-tarefa';
+        
+        // Formatação de datas
+        const dataCriacao = tarefa.Data_Criacao ? new Date(tarefa.Data_Criacao).toLocaleDateString('pt-BR') : 'N/A';
+        const dataPrazo = tarefa.Data_Prazo ? new Date(tarefa.Data_Prazo).toLocaleDateString('pt-BR') : 'Não definido';
+        
+        // Definir cor baseada na prioridade
+        let corPrioridade = '';
+        switch(tarefa.Prioridade) {
+            case 'Alta': corPrioridade = 'text-danger'; break;
+            case 'Média': corPrioridade = 'text-warning'; break;
+            case 'Baixa': corPrioridade = 'text-success'; break;
+            default: corPrioridade = 'text-muted';
+        }        // Verificar se a tarefa está concluída
+        const isConcluida = tarefa.Status === 'Concluída' || tarefa.Status === 'Concluida';
+        const classeCard = isConcluida ? 'card-tarefa concluida' : 'card-tarefa';
+        const statusIcon = isConcluida ? '✅' : '';
+        
+        card.className = classeCard;
+        card.setAttribute('data-status', tarefa.Status || 'Pendente');
+          card.innerHTML = `
+            <h3>${statusIcon} ${tarefa.Titulo}</h3>
+            <p><strong>Descrição:</strong> ${tarefa.Descricao || 'Sem descrição'}</p>
+            <p><strong>Criada em:</strong> ${dataCriacao}</p>
+            <p><strong>Prazo:</strong> ${dataPrazo}</p>
             <p><strong>Responsável:</strong> ${tarefa.Responsavel || 'Não atribuído'}</p>
-            <p><strong>Prioridade:</strong> ${tarefa.Prioridade || 'Não definida'}</p>
-            <p><strong>Status:</strong> ${tarefa.Status || 'Pendente'}</p>
+            <p><strong>Prioridade:</strong> <span class="${corPrioridade}">${tarefa.Prioridade || 'Não definida'}</span></p>
             <p><strong>Categoria:</strong> ${tarefa.Categoria || 'Não definida'}</p>
             
+            <div class="status-control">
+                <label><strong>Status:</strong></label>
+                <select class="status-dropdown" onchange="alterarStatus(${tarefa.ID_Tarefa}, this.value)">
+                    <option value="Pendente" ${tarefa.Status === 'Pendente' ? 'selected' : ''}>📋 Pendente</option>
+                    <option value="Em andamento" ${tarefa.Status === 'Em andamento' ? 'selected' : ''}>⚡ Em andamento</option>
+                    <option value="Concluída" ${tarefa.Status === 'Concluída' || tarefa.Status === 'Concluida' ? 'selected' : ''}>✅ Concluída</option>
+                    <option value="Cancelada" ${tarefa.Status === 'Cancelada' ? 'selected' : ''}>❌ Cancelada</option>
+                </select>
+            </div>
+            
             <div class="actions">
-                <button class="btn-editar" onclick="editarTarefa(${tarefa.ID_Tarefa})">✏️ Editar</button>
+                ${isConcluida ? `<button class="btn-desfazer" onclick="desfazerConclusao(${tarefa.ID_Tarefa})">↩️ Desfazer</button>` : ''}
+                <button class="btn-editar" onclick="editarTarefa(${tarefa.ID_Tarefa})" ${isConcluida ? 'disabled' : ''}>✏️ Editar</button>
                 <button class="btn-excluir" onclick="excluirTarefa(${tarefa.ID_Tarefa})">🗑️ Excluir</button>
             </div>
         `;
@@ -54,11 +89,42 @@ async function excluirTarefa(id) {
             
             if (response.ok) {
                 carregarTarefas(); // Recarrega as tarefas
+                alert('Tarefa excluída com sucesso!');
             } else {
-                console.error('Erro ao excluir tarefa');
+                const error = await response.json();
+                alert('Erro ao excluir tarefa: ' + error.message);
             }
         } catch (error) {
             console.error('Erro:', error);
+            alert('Erro de conexão. Verifique se o servidor está rodando.');
+        }
+    }
+}
+
+// Função para concluir tarefa
+async function concluirTarefa(id) {
+    if (confirm('Marcar esta tarefa como concluída?')) {
+        try {
+            const response = await fetch(`${API_URL}/tarefas/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    Status: 'Concluída'
+                })
+            });
+            
+            if (response.ok) {
+                carregarTarefas(); // Recarrega as tarefas
+                alert('Tarefa marcada como concluída!');
+            } else {
+                const error = await response.json();
+                alert('Erro ao concluir tarefa: ' + error.message);
+            }
+        } catch (error) {
+            console.error('Erro:', error);
+            alert('Erro de conexão. Verifique se o servidor está rodando.');
         }
     }
 }
@@ -77,21 +143,49 @@ function editarTarefa(id) {
             targetCard = card;
         }
     });
-    
-    if (targetCard) {        targetCard.innerHTML = `
-            <input type="text" id="edit-titulo" class="form-control mb-2" value="${tarefa.Titulo}">
-            <textarea id="edit-descricao" class="form-control mb-2" rows="3">${tarefa.Descricao || ''}</textarea>
-            <input type="date" id="edit-prazo" class="form-control mb-2" value="${tarefa.Data_Prazo ? tarefa.Data_Prazo.split('T')[0] : ''}">
-            <input type="text" id="edit-responsavel" class="form-control mb-2" value="${tarefa.Responsavel || ''}">
-            <select id="edit-prioridade" class="form-control mb-2">
-                <option value="Baixa" ${tarefa.Prioridade === 'Baixa' ? 'selected' : ''}>Baixa</option>
-                <option value="Média" ${tarefa.Prioridade === 'Média' ? 'selected' : ''}>Média</option>
-                <option value="Alta" ${tarefa.Prioridade === 'Alta' ? 'selected' : ''}>Alta</option>
-            </select>
-            <input type="text" id="edit-categoria" class="form-control mb-2" value="${tarefa.Categoria || ''}">
+      if (targetCard) {
+        const dataPrazo = tarefa.Data_Prazo ? tarefa.Data_Prazo.split('T')[0] : '';
+        
+        targetCard.innerHTML = `
+            <div class="mb-3">
+                <label class="form-label">Título:</label>
+                <input type="text" id="edit-titulo" class="form-control" value="${tarefa.Titulo}">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Descrição:</label>
+                <textarea id="edit-descricao" class="form-control" rows="3">${tarefa.Descricao || ''}</textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Prazo:</label>
+                <input type="date" id="edit-prazo" class="form-control" value="${dataPrazo}">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Responsável:</label>
+                <input type="text" id="edit-responsavel" class="form-control" value="${tarefa.Responsavel || ''}">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Prioridade:</label>
+                <select id="edit-prioridade" class="form-control">
+                    <option value="Baixa" ${tarefa.Prioridade === 'Baixa' ? 'selected' : ''}>Baixa</option>
+                    <option value="Média" ${tarefa.Prioridade === 'Média' ? 'selected' : ''}>Média</option>
+                    <option value="Alta" ${tarefa.Prioridade === 'Alta' ? 'selected' : ''}>Alta</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Categoria:</label>
+                <input type="text" id="edit-categoria" class="form-control" value="${tarefa.Categoria || ''}">
+            </div>            <div class="mb-3">
+                <label class="form-label">Status:</label>
+                <select id="edit-status" class="form-control">
+                    <option value="Pendente" ${tarefa.Status === 'Pendente' ? 'selected' : ''}>Pendente</option>
+                    <option value="Em andamento" ${tarefa.Status === 'Em andamento' ? 'selected' : ''}>Em andamento</option>
+                    <option value="Concluída" ${tarefa.Status === 'Concluída' ? 'selected' : ''}>Concluída</option>
+                    <option value="Cancelada" ${tarefa.Status === 'Cancelada' ? 'selected' : ''}>Cancelada</option>
+                </select>
+            </div>
             <div class="actions">
-                <button class="btn-salvar" onclick="salvarEdicao(${id})">Salvar</button>
-                <button class="btn-cancelar" onclick="carregarTarefas()">Cancelar</button>
+                <button class="btn-salvar" onclick="salvarEdicao(${id})">💾 Salvar</button>
+                <button class="btn-cancelar" onclick="carregarTarefas()">❌ Cancelar</button>
             </div>
         `;
     }
@@ -105,7 +199,8 @@ async function salvarEdicao(id) {
             Data_Prazo: document.getElementById('edit-prazo').value || null,
             Responsavel: document.getElementById('edit-responsavel').value,
             Prioridade: document.getElementById('edit-prioridade').value,
-            Categoria: document.getElementById('edit-categoria').value
+            Categoria: document.getElementById('edit-categoria').value,
+            Status: document.getElementById('edit-status') ? document.getElementById('edit-status').value : 'Pendente'
         };
         
         const response = await fetch(`${API_URL}/tarefas/${id}`, {
@@ -118,11 +213,14 @@ async function salvarEdicao(id) {
         
         if (response.ok) {
             carregarTarefas(); // Recarrega as tarefas
+            alert('Tarefa atualizada com sucesso!');
         } else {
-            console.error('Erro ao salvar edição');
+            const error = await response.json();
+            alert('Erro ao salvar edição: ' + error.message);
         }
     } catch (error) {
         console.error('Erro:', error);
+        alert('Erro de conexão. Verifique se o servidor está rodando.');
     }
 }
 
@@ -142,15 +240,32 @@ form.onsubmit = async function(e) {
     
     try {
         const novaTarefa = {
-            Titulo: document.getElementById('titulo').value,
-            Descricao: document.getElementById('descricao').value,
+            Titulo: document.getElementById('titulo').value.trim(),
+            Descricao: document.getElementById('descricao').value.trim(),
             Data_Prazo: document.getElementById('prazo').value || null,
-            Criador: document.getElementById('criador').value,
-            Responsavel: document.getElementById('responsavel').value,
+            Responsavel: document.getElementById('responsavel').value.trim(),
             Prioridade: document.getElementById('prioridade').value,
-            Categoria: document.getElementById('categoria').value,
+            Status: document.getElementById('status') ? document.getElementById('status').value.trim() : 'Pendente',
+            Categoria: document.getElementById('categoria').value.trim(),
             Status: 'Pendente'
         };
+          // Validações básicas
+        if (!novaTarefa.Titulo) {
+            alert('Título é obrigatório!');
+            return;
+        }
+        if (!novaTarefa.Responsavel) {
+            alert('Responsável é obrigatório!');
+            return;
+        }
+        if (!novaTarefa.Prioridade) {
+            alert('Prioridade é obrigatória!');
+            return;
+        }
+        if (!novaTarefa.Categoria) {
+            alert('Categoria é obrigatória!');
+            return;
+        }
         
         const response = await fetch(`${API_URL}/tarefas`, {
             method: 'POST',
@@ -164,9 +279,10 @@ form.onsubmit = async function(e) {
             form.reset();
             document.getElementById('modal-tarefa').style.display = 'none';
             carregarTarefas(); // Recarrega as tarefas
+            alert('Tarefa criada com sucesso!');
         } else {
-            console.error('Erro ao criar tarefa');
-            alert('Erro ao criar tarefa. Tente novamente.');
+            const error = await response.json();
+            alert('Erro ao criar tarefa: ' + error.message);
         }
     } catch (error) {
         console.error('Erro:', error);
@@ -212,3 +328,60 @@ btnLimparFiltro.onclick = function() {
 
 // Inicializa carregando as tarefas do backend
 carregarTarefas();
+
+// Função para alterar status via dropdown
+async function alterarStatus(id, novoStatus) {
+    try {
+        const response = await fetch(`${API_URL}/tarefas/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                Status: novoStatus
+            })
+        });
+        
+        if (response.ok) {
+            carregarTarefas(); // Recarrega as tarefas
+            // Alert opcional para feedback
+            // alert(`Status alterado para: ${novoStatus}`);
+        } else {
+            const error = await response.json();
+            alert('Erro ao alterar status: ' + error.message);
+            carregarTarefas(); // Recarrega para voltar ao estado anterior
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        alert('Erro de conexão. Verifique se o servidor está rodando.');
+        carregarTarefas(); // Recarrega para voltar ao estado anterior
+    }
+}
+
+// Função para desfazer conclusão (volta para "Em andamento")
+async function desfazerConclusao(id) {
+    if (confirm('Desfazer conclusão desta tarefa?')) {
+        try {
+            const response = await fetch(`${API_URL}/tarefas/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    Status: 'Em andamento'
+                })
+            });
+            
+            if (response.ok) {
+                carregarTarefas(); // Recarrega as tarefas
+                alert('Conclusão desfeita! Tarefa voltou para "Em andamento".');
+            } else {
+                const error = await response.json();
+                alert('Erro ao desfazer conclusão: ' + error.message);
+            }
+        } catch (error) {
+            console.error('Erro:', error);
+            alert('Erro de conexão. Verifique se o servidor está rodando.');
+        }
+    }
+}

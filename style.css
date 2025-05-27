@@ -17,13 +17,15 @@ body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: #f4f4f4;
+    /* background: #f4f4f4; */ /* Remova ou comente esta linha */
     z-index: 10;
     overflow-y: auto;
     padding-top: 100px;
 }
 #tela-todo {
     z-index: 20;
+    background: url('imagens/home.jpeg') no-repeat center center fixed;
+    background-size: cover;
 }
 #btn-voltar {
     position: fixed;
@@ -67,6 +69,18 @@ body {
     width: 250px;
     min-width: 220px;
     max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 340px; /* Altura fixa para todos os cards */
+    overflow: hidden;
+}
+.card-tarefa p {
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    max-height: 80px;
 }
 .card-tarefa.done {
     opacity: 0.6;
@@ -177,4 +191,159 @@ body {
     align-items: center;
     gap: 8px;
     margin-bottom: 16px;
+}
+
+/* Estilos para tarefas concluídas */
+.card-tarefa.concluida {
+    background: #f0f8ff;
+    border: 2px solid #28a745;
+    opacity: 0.8;
+}
+
+.card-tarefa.concluida h3 {
+    color: #28a745;
+    text-decoration: line-through;
+}
+
+.card-tarefa.concluida p {
+    color: #6c757d;
+}
+
+.status-concluida {
+    color: #28a745 !important;
+    font-weight: bold;
+}
+
+/* Botão concluir */
+.btn-concluir {
+    background: #28a745 !important;
+    color: white !important;
+}
+
+.btn-concluir:hover {
+    background: #218838 !important;
+}
+
+/* Botão editar desabilitado */
+.btn-editar:disabled {
+    background: #6c757d !important;
+    cursor: not-allowed !important;
+    opacity: 0.6;
+}
+
+/* Controle de Status no Card */
+.status-control {
+    margin: 12px 0;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    border: 1px solid #e9ecef;
+}
+
+.status-control label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+    color: #495057;
+    font-size: 0.9rem;
+}
+
+.status-dropdown {
+    width: 100%;
+    padding: 8px 12px;
+    border: 2px solid #dee2e6;
+    border-radius: 6px;
+    background: white;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.status-dropdown:hover {
+    border-color: #007bff;
+    box-shadow: 0 2px 4px rgba(0,123,255,0.1);
+}
+
+.status-dropdown:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+/* Botão Desfazer */
+.btn-desfazer {
+    background: #ffc107 !important;
+    color: #212529 !important;
+    font-weight: 600;
+    border: 2px solid #ffc107 !important;
+}
+
+.btn-desfazer:hover {
+    background: #e0a800 !important;
+    border-color: #d39e00 !important;
+    transform: translateY(-1px);
+}
+
+/* Estilo especial para dropdown de tarefas concluídas */
+.card-tarefa.concluida .status-control {
+    background: #e8f5e8;
+    border-color: #28a745;
+}
+
+.card-tarefa.concluida .status-dropdown {
+    background: #f8fff8;
+    border-color: #28a745;
+    color: #155724;
+}
+
+/* Indicadores visuais para diferentes status */
+.card-tarefa[data-status="Pendente"] .status-control {
+    background: #fff3cd;
+    border-color: #ffc107;
+}
+
+.card-tarefa[data-status="Em andamento"] .status-control {
+    background: #cce5ff;
+    border-color: #007bff;
+}
+
+.card-tarefa[data-status="Concluída"] .status-control {
+    background: #d4edda;
+    border-color: #28a745;
+}
+
+.card-tarefa[data-status="Cancelada"] .status-control {
+    background: #f8d7da;
+    border-color: #dc3545;
+}
+
+/* Melhorar espaçamento dos botões */
+.card-tarefa .actions {
+    margin-top: 16px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    padding-top: 12px;
+    border-top: 1px solid #e9ecef;
+}
+#tela-inicial {
+    background: #222 url('imagens/inicial.jpeg') no-repeat center center fixed;
+    background-size: cover; /* cobre toda a tela proporcionalmente */
+}
+
+#tela-inicial h1,
+#tela-inicial p {
+    background: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+}
+
+#tela-inicial .btn.btn-primary.btn-lg {
+    border-radius: 40px !important;
+    padding-left: 36px;
+    padding-right: 36px;
+    font-size: 1.3em;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
 }

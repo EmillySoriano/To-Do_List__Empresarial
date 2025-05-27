@@ -19,8 +19,8 @@
 </head>
 <body>
     <div id="tela-inicial" class="d-flex flex-column justify-content-center align-items-center vh-100 fade show">
-        <h1 class="mb-4">Bem-vindo ao To-Do List Empresarial</h1>
-        <p class="mb-4">Organize suas tarefas de forma visual e prática, no estilo Trello!</p>
+        <h1 class="mb-4" style="background: rgba(255,255,255,0.85); border-radius: 12px; padding: 16px 32px;">Bem-vindo ao To-Do List Empresarial</h1>
+        <p class="mb-4" style="background: rgba(255,255,255,0.85); border-radius: 12px; padding: 10px 24px;">Organize suas tarefas de forma visual e prática, no estilo Trello!</p>
         <button class="btn btn-primary btn-lg" onclick="mostrarToDoList()">Ir para To-Do List</button>
     </div>
 
@@ -38,12 +38,11 @@
         <button id="btn-voltar" class="btn btn-secondary" onclick="voltarParaInicial()" style="position: fixed; top: 32px; left: 32px; z-index: 1050;">
             ← Voltar para tela inicial
         </button>
-            <!-- Adicione dentro de #tela-todo, antes de #tarefas-lista -->
-    <div class="container my-3">
-        <button id="btn-limpar-filtro" class="btn btn-warning" style="display:none; margin-bottom: 16px;">
-        Limpar Filtro
-        </button>
-    </div>
+        <div class="container my-3">
+            <button id="btn-limpar-filtro" class="btn btn-warning" style="display:none; margin-bottom: 16px;">
+            Limpar Filtro
+            </button>
+        </div>
         <div class="container my-5">
             <!-- Lista de tarefas -->
             <div id="tarefas-lista" class="d-flex flex-wrap gap-3"></div>
@@ -51,19 +50,23 @@
     </div>
 
     <!-- Modal de Nova Tarefa -->
-    <div id="modal-tarefa" class="modal-tarefa-bg" style="display:none;">
-      <div class="modal-tarefa">        <form id="todo-form" class="d-flex flex-column gap-3">
+    <div id="modal-tarefa" class="modal-tarefa-bg" style="display:none;">      <div class="modal-tarefa">        <form id="todo-form" class="d-flex flex-column gap-3">
           <h4 class="mb-3">Nova Tarefa</h4>
           <input type="text" id="titulo" class="form-control" placeholder="Título" required>
           <textarea id="descricao" class="form-control" placeholder="Descrição" rows="3"></textarea>
           <input type="date" id="prazo" class="form-control">
-          <input type="text" id="criador" class="form-control" placeholder="Criador" required>
-          <input type="text" id="responsavel" class="form-control" placeholder="Responsável/Setor" required>
-          <select id="prioridade" class="form-control" required>
+          <input type="text" id="responsavel" class="form-control" placeholder="Responsável/Setor" required>          <select id="prioridade" class="form-control" required>
             <option value="">Selecione a Prioridade</option>
             <option value="Baixa">Baixa</option>
             <option value="Média">Média</option>
             <option value="Alta">Alta</option>
+          </select>
+          <select id="status" class="form-control">
+            <option value="">Selecione o Status</option>
+            <option value="Pendente" selected>Pendente</option>
+            <option value="Em andamento">Em andamento</option>
+            <option value="Concluída">Concluída</option>
+            <option value="Cancelada">Cancelada</option>
           </select>
           <input type="text" id="categoria" class="form-control" placeholder="Categoria" required>
           <div class="d-flex gap-2 justify-content-end">

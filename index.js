@@ -28,8 +28,67 @@ app.use('/categorias', categoriasRouter);
 app.use('/tarefa-categoria', tarefaCategoriaRouter);
 app.use('/usuario-acesso', usuarioAcessoRouter);
 
+// Rota principal
+app.get('/', (req, res) => res.json({ message: 'API To-Do List Empresarial' }));
+
 // Middleware de tratamento de erros (deve vir por último)
 app.use(errorHandler);
 
-app.get('/', (req, res) => res.json({ message: 'API To-Do List Empresarial' }));
-app.listen(3000, () => console.log('Servidor rodando na porta 3000'));
+// Função para encontrar uma porta disponível
+const findAvailablePort = (startPort) => {
+  return new Promise((resolve, reject) => {
+    const server = app.listen(startPort, () => {
+      const port = server.address().port;
+      server.close(() => resolve(port));
+    }).on('error', (err) => {
+      if (err.code === 'EADDRINUSE') {
+        findAvailablePort(startPort + 1).then(resolve).catch(reject);
+      } else {
+        reject(err);
+      }
+    });
+  });
+};
+
+// Iniciar servidor com porta flexível
+const startServer = async () => {
+  try {
+    const port = await findAvailablePort(3000);
+    app.listen(port, '0.0.0.0', () => {
+      console.log(`Servidor rodando na porta ${port}`);
+      console.log(`Acesse: http://localhost:${port}`);
+      console.log(`Ou pelo IP da rede: http://${getLocalIP()}:${port}`);
+    });
+  } catch (error) {
+    console.error('Erro ao iniciar servidor:', error);
+  }
+};
+
+// Função para obter IP local
+const getLocalIP = () => {
+  const { networkInterfaces } = require('os');
+  const nets = networkInterfaces();
+  const results = {};
+
+  for (const name of Object.keys(nets)) {
+    for (const net of nets[name]) {
+      const familyV4Value = typeof net.family === 'string' ? 'IPv4' : 4;
+      if (net.family === familyV4Value && !net.internal) {
+        if (!results[name]) {
+          results[name] = [];
+        }
+        results[name].push(net.address);
+      }
+    }
+  }
+  
+  // Retorna o primeiro IP encontrado
+  for (const name of Object.keys(results)) {
+    if (results[name].length > 0) {
+      return results[name][0];
+    }
+  }
+  return 'localhost';
+};
+
+startServer();
